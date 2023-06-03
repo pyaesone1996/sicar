@@ -65,7 +65,7 @@ class LandingPageController extends Controller
 
         $total = 0;
         foreach ($cars as $car) {
-            $total += $car['price'] * ((int)$car['perday'] ?? 1);
+            $total += $car['price'] * ((int)$car['perdays'] ?? 1);
         }
         if ($count < 1) {
             $total += 200;

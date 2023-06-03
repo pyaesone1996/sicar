@@ -136,9 +136,9 @@
                                                         {{ $car['category'] }}</span>
                                                 </div>
                                                 <div class="d-flex justify-content-between">
-                                                    <span>Perday : {{ $car['perday'] }}</span>
+                                                    <span>Perday : {{ $car['perdays'] }}</span>
                                                     <span>$
-                                                        {{ (int) $car['price'] * (int) $car['perday'] }}</span>
+                                                        {{ (int) $car['price'] * (int) $car['perdays'] }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -211,7 +211,39 @@
     </div>
 
     <script>
-        function checkout() {
+        // function checkout() {
+        //     return {
+        //         isOpen: false,
+        //         count: 0,
+        //         email: "",
+        //         name: "",
+        //         phone: "",
+        //         address1: "",
+        //         address2: "",
+        //         city: "",
+        //         state: "",
+        //         postal_code: "",
+        //         isFetch: false,
+        //         total: 0,
+        //         onSubmit: async function() {
+        //             this.isFetch = true;
+        //             this.isOpen = true;
+        //             const response = await fetch(
+        //                 "/check/user?email=" + this.email
+        //             ).then((r) => r.json());
+        //             let total = response.total;
+        //             let count = response.count;
+        //             console.log(count);
+        //             if (total) {
+        //                 this.total = parseInt(total);
+        //                 this.count = parseInt(count);
+        //             }
+        //             this.isFetch = false;
+        //         },
+        //     };
+        // }
+
+         function checkout() {
             return {
                 isOpen: false,
                 count: 0,
@@ -225,7 +257,11 @@
                 postal_code: "",
                 isFetch: false,
                 total: 0,
-                onSubmit: async function() {
+                onSubmit: async function () {
+                    if (this.email === "") {
+                        alert("please fill your email!");
+                        return false;
+                    }
                     this.isFetch = true;
                     this.isOpen = true;
                     const response = await fetch(
@@ -241,6 +277,15 @@
                     this.isFetch = false;
                 },
             };
+
         }
+
+       
+    </script>
+
+     <script type="module">
+        $(document).ready(function () {
+            $('#staticBackdrop').modal('hide');
+        });
     </script>
 </x-landing-layout>

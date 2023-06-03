@@ -62,9 +62,12 @@
                                                 @forelse ($cars as $value)
                                                     <li>
                                                         <div class="media">
-                                                            <div class="media-body">
-                                                                <h4>{{ $value['name'] }}</h4>
-                                                                <h4><span>1 x $ {{ $value['price'] }}</span></h4>
+                                                            <div class="d-flex">
+                                                                <div>
+                                                                    <img src="{{ $value['image'] }}" alt="" width="100" class="img-fluid object-cover">
+                                                                    <h6>{{ $value['name'] }}</h6>
+                                                                </div>
+                                                                <p><span>1 x $ {{ $value['price'] }}</span></p>
                                                             </div>
                                                         </div>
                                                     </li>
@@ -152,10 +155,7 @@
         });
     </script>
 
-    <footer class="bg-light py-3 mt-4">
-        <p class="text-center"> &copy; All Rights Reserved By Sithu'cars Showroom</p>
-     
-    </footer>
+    @include('layouts.footer')
 
 </body>
 

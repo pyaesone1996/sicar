@@ -12,6 +12,9 @@ class ShoppingCartController extends Controller
     {
         $cars = $request->session()->get('cars', []);
         $totalPrice = 0;
+        if (count($cars) === 0) {
+            return redirect('/');
+        }
 
         foreach ($cars as $item) {
             $totalPrice += (int)$item['price'];
@@ -58,9 +61,6 @@ class ShoppingCartController extends Controller
     public function addtocarts(Request $request)
     {
         $ids = $request->input('ids');
-        if($ids== null){
-            return redirect('/');
-        }
         $perdays = $request->input('perdays');
         $newCart = [];
         for ($i = 0; $i < count($ids); $i++) {
@@ -75,7 +75,7 @@ class ShoppingCartController extends Controller
         $cars->transform(function ($car) use ($newCart) {
             foreach ($newCart as $newCar) {
                 if ($car['id'] === $newCar['id']) {
-                    $car['perday'] = $newCar['perday'];
+                    $car['perdays'] = $newCar['perday'];
                     break;
                 }
             }
@@ -89,7 +89,7 @@ class ShoppingCartController extends Controller
 
     public function cartJson(Request $request)
     {
-        $cars = collect($request->session()->get('cars', []))->toArray();
+        $cars = collect($request->session()->get('cars', []));
 
         return response()->json($cars);
     }
@@ -97,10 +97,12 @@ class ShoppingCartController extends Controller
     public function delete()
     {
         session()->flush();
+
         // session()->keep(['username', 'email']);
+
         return redirect('/');
     }
-    public function remove(string $id) 
+    public function remove(string $id)
     {
         $cars = session()->get('cars', []);
 
@@ -114,28 +116,32 @@ class ShoppingCartController extends Controller
         }
         session()->put('cars', $cars);
         return back()->with('success', 'Item removed from cart!');
-
     }
 
     public function removeItem(string $id)
     {
         $cars = session()->get('cars', []);
 
+        $newCars = [];
+
         // loop through cart items to find item with matching ID
         foreach ($cars as $key => $item) {
             if ($item['id'] == $id) {
                 // remove item from cart
-                unset($cars[$key]);
-                break;
+                // unset($cars[$key]);
+                // break;
+            } else {
+                array_push($newCars, $item);
             }
         }
 
-        session()->put('cars', $cars);
+        // $cars = $cars->where('id', '!=', $id)->toArray();
+
+        session()->put('cars', $newCars);
         return response()->json([
             'id' => $id
         ]);
     }
-
     public function perdayItem(Request $request)
     {
         $cars = collect($request->session()->get('cars', []));

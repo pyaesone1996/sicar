@@ -37,17 +37,18 @@
                                                     <td class="align-middle">
                                                         <span x-text="cart.category"></span>
                                                     </td>
-                                                     <td class="align-middle">
+                                                    <td class="align-middle">
                                                         <input type="hidden" x-model="cart.id" name="ids[]" />
                                                         <input type="number" name="perdays[]" x-model="cart.perdays"
+                                                            @change="onChangeQty(cart.id, $event.target.value)"
                                                             min="1" class="form-control"
                                                             style="border-radius: 0px" placeholder="1" />
                                                     </td>
-                                                     <td class="align-middle">
+                                                    <td class="align-middle">
                                                         <span>$</span>
                                                         <span x-text="cart.perdays * cart.price"></span>
                                                     </td>
-                                                     <td class="align-middle">
+                                                    <td class="align-middle">
                                                         <button type="button" @click="removeItem(cart.id)"
                                                             class="btn btn-primary">
                                                             Delete
@@ -58,7 +59,7 @@
 
                                         </tbody>
                                     </table>
-                                   
+
                                     </template>
                                 </div>
                                 <div class="px-4 py-1">
@@ -67,7 +68,7 @@
                                         <p><span>$</span><span x-text="total"></span></p>
                                     </div>
                                     <div class="mt-3 d-flex justify-content-end">
-                                        <button href="/checkout" class="btn btn-primary">
+                                        <button type="submit" href="" class="btn btn-primary">
                                             Checkout
                                         </button>
                                     </div>
@@ -86,7 +87,7 @@
     </div>
 
 
-    <script>
+    {{-- <script>
           function cart() {
             return {
                 carts: [],
@@ -176,6 +177,127 @@
                             (accumulator, item) =>
                                 accumulator +
                                 parseInt(item.price) * parseInt(item.perdays),
+                            0
+                        );
+                        this.total = total;
+
+                        this.isUploading = false;
+                    });
+                },
+            };
+        }
+    </script> --}}
+
+    <script>
+        function cart() {
+            return {
+                carts: [],
+                total: 0,
+                // isChange: false,
+                isUploading: false,
+                removeItem: async function(id) {
+                    this.isUploading = true;
+                    const response = await fetch("/removeItem/" + id)
+                        .then((r) => r.json())
+                        .catch((e) => {
+                            return null;
+                        });
+                    if (response) {
+                        let newCarts = this.carts.filter(
+                            (cart) => cart.id !== id
+                        );
+                        // calculate total
+                        let total = newCarts.reduce(
+                            (accumulator, item) =>
+                            accumulator +
+                            parseInt(item.price) * parseInt(item.perdays),
+                            0
+                        );
+                        this.total = total;
+                        this.carts = newCarts;
+
+                        window.Alpine.store("totalCount").update(
+                            this.carts.length
+                        );
+                        this.isUploading = false;
+                    }
+                    this.isUploading = true;
+                },
+                onChangeQty: async function qty(id, perdays) {
+                    // this.isChange = true;
+                    // alert("change");
+                    console.log("id", id);
+                    console.log("qty", perdays);
+                    this.isUploading = true;
+
+                    // console.log(newValue);
+
+                    const response = await fetch(
+                            "/cart/update?perdays=" + perdays + "&id=" + id
+                        )
+                        .then((r) => r.json())
+                        .catch((e) => {
+                            return null;
+                        });
+                    if (!response) {
+                        return;
+                    }
+
+                    let total = this.carts.reduce(
+                        (accumulator, item) =>
+                        accumulator +
+                        parseInt(item.price) * parseInt(item.perdays),
+                        0
+                    );
+                    this.total = total;
+
+                    this.isUploading = false;
+                },
+                fetchCartData: async function() {
+                    const carts = await fetch("/cart/api")
+                        .then((r) => r.json())
+                        .catch((e) => {
+                            return null;
+                        });
+                    if (carts) {
+                        this.carts = carts.map((cart) => {
+                            return {
+                                ...cart,
+                                perdays: parseInt(cart.perdays)
+                            };
+                        });
+                        let total = carts.reduce(
+                            (accumulator, item) =>
+                            accumulator +
+                            parseInt(item.price) * parseInt(item.perdays),
+                            0
+                        );
+                        this.total = total;
+                    }
+                    this.$watch("carts", async (newValue) => {
+                        console.log(newValue[0].perdays);
+                        this.isUploading = true;
+
+                        console.log(newValue);
+
+                        const response = await fetch(
+                                "/cart/update?perdays=" +
+                                newValue[0].perdays +
+                                "&id=" +
+                                newValue[0].id
+                            )
+                            .then((r) => r.json())
+                            .catch((e) => {
+                                return null;
+                            });
+                        if (!response) {
+                            return;
+                        }
+
+                        let total = this.carts.reduce(
+                            (accumulator, item) =>
+                            accumulator +
+                            parseInt(item.price) * parseInt(item.perdays),
                             0
                         );
                         this.total = total;
