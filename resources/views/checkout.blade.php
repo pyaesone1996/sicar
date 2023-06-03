@@ -117,6 +117,7 @@
                                         data-bs-target="#staticBackdrop" @click="onSubmit">
                                         Submit
                                     </button>
+
                                 </div>
                             </form>
 
@@ -125,7 +126,7 @@
                             <div class="col-span-1">
                                 <div class="shadow-md rounded-lg p-4 space-y-3">
                                     @foreach ($cars as $car)
-                                        <div class="d-flex">
+                                        <div class="d-flex my-2">
                                             <div style="width: 500px">
                                                 <img class="img-fluid" src="{{ $car['image'] }}" alt="Images" />
                                             </div>
@@ -158,37 +159,38 @@
         <!-- Button trigger modal -->
 
         <!-- Modal -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Confirmation</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mt-2">
-                            <template x-if="isFetch">
-                                <div>loading...</div>
-                            </template>
-                            <template x-if="!isFetch">
-                                <p class="text-sm text-gray-500">
-                                    your total price is
-                                    <span class="font-semibold">$</span>
-                                    <span class="font-semibold" x-text="total"></span>
-                                </p>
-                            </template>
-                            <template x-if="count === 0">
-                                <p class="text-gray-500 text-sm mt-4">
-                                    Note : $200 will be applied to
-                                    new user
-                                </p>
-                            </template>
+        <div x-show="isOpen">
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Confirmation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <form method="post" action="/checkout">
+                        <div class="modal-body">
+                            <div class="mt-2">
+                                <template x-if="isFetch">
+                                    <div>loading...</div>
+                                </template>
+                                <template x-if="!isFetch">
+                                    <p class="text-sm text-gray-500">
+                                        your total price is
+                                        <span class="font-semibold">$</span>
+                                        <span class="font-semibold" x-text="total"></span>
+                                    </p>
+                                </template>
+                                <template x-if="count === 0">
+                                    <p class="text-gray-500 text-sm mt-4">
+                                        Note : $200 will be applied to
+                                        new user
+                                    </p>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="/checkout">
                                 @csrf
                                 <input type="hidden" x-model="name" name="name" />
                                 <input type="hidden" x-model="email" name="email" />
@@ -202,48 +204,18 @@
                                     Confirm
                                 </button>
                             </form>
-                      
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 
     <script>
-        // function checkout() {
-        //     return {
-        //         isOpen: false,
-        //         count: 0,
-        //         email: "",
-        //         name: "",
-        //         phone: "",
-        //         address1: "",
-        //         address2: "",
-        //         city: "",
-        //         state: "",
-        //         postal_code: "",
-        //         isFetch: false,
-        //         total: 0,
-        //         onSubmit: async function() {
-        //             this.isFetch = true;
-        //             this.isOpen = true;
-        //             const response = await fetch(
-        //                 "/check/user?email=" + this.email
-        //             ).then((r) => r.json());
-        //             let total = response.total;
-        //             let count = response.count;
-        //             console.log(count);
-        //             if (total) {
-        //                 this.total = parseInt(total);
-        //                 this.count = parseInt(count);
-        //             }
-        //             this.isFetch = false;
-        //         },
-        //     };
-        // }
-
-         function checkout() {
+        function checkout() {
             return {
                 isOpen: false,
                 count: 0,
@@ -257,10 +229,14 @@
                 postal_code: "",
                 isFetch: false,
                 total: 0,
-                onSubmit: async function () {
+                onSubmit: async function() {
                     if (this.email === "") {
+                        $('.modal-backdrop').remove();
+                        $('body').removeClass('modal-open');
+                        $('body').removeAttr('style');
                         alert("please fill your email!");
                         return false;
+
                     }
                     this.isFetch = true;
                     this.isOpen = true;
@@ -278,14 +254,9 @@
                 },
             };
 
+
+
         }
-
-       
     </script>
 
-     <script type="module">
-        $(document).ready(function () {
-            $('#staticBackdrop').modal('hide');
-        });
-    </script>
 </x-landing-layout>

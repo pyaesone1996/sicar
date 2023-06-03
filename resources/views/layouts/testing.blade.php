@@ -31,7 +31,7 @@
 
                             <div class="brand-logo">
                                 <a href="{{ url('/') }}"
-                                    class="text-decoration-none h3 text-capitalize">Sithu'Cars</a>
+                                    class="text-decoration-none h3 text-capitalize">Tu'Cars</a>
                             </div>
                         </div>
 
@@ -64,7 +64,8 @@
                                                         <div class="media">
                                                             <div class="d-flex">
                                                                 <div>
-                                                                    <img src="{{ $value['image'] }}" alt="" width="100" class="img-fluid object-cover">
+                                                                    <img src="{{ $value['image'] }}" alt=""
+                                                                        width="100" class="img-fluid object-cover">
                                                                     <h6>{{ $value['name'] }}</h6>
                                                                 </div>
                                                                 <p><span>1 x $ {{ $value['price'] }}</span></p>

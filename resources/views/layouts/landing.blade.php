@@ -31,7 +31,7 @@
 
                             <div class="brand-logo">
                                 <a href="{{ url('/') }}"
-                                    class="text-decoration-none h3 text-capitalize">Sithu'Cars</a>
+                                    class="text-decoration-none h3 text-capitalize">Tu'Cars</a>
                             </div>
                         </div>
 
@@ -106,6 +106,7 @@
     <!-- shop body end -->
 
     @include('layouts.footer')
+    
 </body>
 
 </html>
